@@ -1,46 +1,67 @@
-// App.js
-import { Network, TatumSDK, Ethereum } from "@tatumio/tatum";
-import React, { useState } from "react";
+import React, { useState } from 'react';
+
+import { useFetchEthereumAddressBalance } from '../../hooks/useFetchEthereumAddressBalance';
 
 function Form() {
-  const [inputValue, setInputValue] = useState(""); // State to hold the input value
-  const [labelText, setLabelText] = useState(""); // State to hold the label text
+    const [inputValue, setInputValue] = useState(''); // State to hold the input value
 
-  const handleButtonClick = async () => {
-    const tatum = await TatumSDK.init<Ethereum>({
-      network: Network.ETHEREUM,
-      apiKey: { v4: "t-65ddbb2bb792d6001be685d9-442dd087e58442acac87f5f9" },
-      verbose: true,
-    });
-    const balance = await tatum.address.getBalance({
-      addresses: [inputValue],
-    });
-    const balanceData = balance.data.filter(
-      (asset) => asset.asset === "ETH"
-    )[0];
+    const { fetchBalance, loading, error, balance } =
+        useFetchEthereumAddressBalance();
 
-    setLabelText(`Balance: ${balanceData.balance}`);
-  };
+    const handleSubmit = async () => {
+        await fetchBalance(inputValue);
+    };
 
-  return (
-    <div>
-      <p>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Enter ETH wallet address to get balance"
-          style={{ padding: "5px", width: "320px" }}
-        />
-      </p>
-      <button onClick={handleButtonClick} style={{ padding: "5px" }}>
-        Click Me
-      </button>
-      <p style={{ padding: "5px", fontSize: "16px", fontWeight: "bold" }}>
-        {labelText}
-      </p>
-    </div>
-  );
+    return (
+        <form
+            onSubmit={(e) => {
+                e.preventDefault();
+            }}
+        >
+            <input
+                type="text"
+                value={inputValue}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setInputValue(e.currentTarget.value)
+                }
+                placeholder="Enter ETH wallet address to get balance"
+                style={{
+                    padding: '5px',
+                    width: '320px',
+                    display: 'block',
+                    marginBottom: '10px',
+                }}
+            />
+            <button
+                onClick={handleSubmit}
+                style={{ padding: '5px' }}
+                disabled={!inputValue || loading}
+                type="submit"
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        handleSubmit();
+                    }
+                }}
+            >
+                Submit
+            </button>
+
+            {balance && (
+                <p
+                    style={{
+                        padding: '5px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    {`Balance: ${balance}`}
+                </p>
+            )}
+
+            {error && <div>{error}</div>}
+            {loading && <div>Loading...</div>}
+        </form>
+    );
 }
 
 export default Form;
