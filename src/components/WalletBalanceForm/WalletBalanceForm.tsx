@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 
 import { useFetchEthereumAddressBalance } from '../../hooks/useFetchEthereumAddressBalance';
+import { LoadingIndicator } from '../LoadingIndicator/LoadingIndicator';
+import { ErrorNotification } from '../ErrorNotification/ErrorNotification';
 
-function Form() {
-    const [inputValue, setInputValue] = useState(''); // State to hold the input value
+import styles from './WalletBalanceForm.module.css';
+
+export const WalletBalanceForm = () => {
+    const [inputValue, setInputValue] = useState('');
 
     const { fetchBalance, loading, error, balance } =
         useFetchEthereumAddressBalance();
@@ -19,22 +23,19 @@ function Form() {
             }}
         >
             <input
+                id="address"
+                className={styles.addressInput}
                 type="text"
                 value={inputValue}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setInputValue(e.currentTarget.value)
                 }
                 placeholder="Enter ETH wallet address to get balance"
-                style={{
-                    padding: '5px',
-                    width: '320px',
-                    display: 'block',
-                    marginBottom: '10px',
-                }}
             />
+
             <button
                 onClick={handleSubmit}
-                style={{ padding: '5px' }}
+                className={styles.submitButton}
                 disabled={!inputValue || loading}
                 type="submit"
                 onKeyDown={(e) => {
@@ -43,25 +44,14 @@ function Form() {
                     }
                 }}
             >
-                Submit
+                {loading ? <LoadingIndicator /> : 'Submit'}
             </button>
 
             {balance && (
-                <p
-                    style={{
-                        padding: '5px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
-                    {`Balance: ${balance}`}
-                </p>
+                <p className={styles.balance}>{`Balance: ${balance} ETH`}</p>
             )}
 
-            {error && <div>{error}</div>}
-            {loading && <div>Loading...</div>}
+            <ErrorNotification message={error?.message} />
         </form>
     );
-}
-
-export default Form;
+};

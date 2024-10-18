@@ -1,0 +1,18 @@
+.balance {
+    padding: 5px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.submitButton {
+    padding: 5px;
+    min-width: 60px;
+    cursor: pointer;
+}
+
+.addressInput {
+    padding: 5px;
+    width: 320px;
+    display: block;
+    margin-bottom: 10px;
+}
