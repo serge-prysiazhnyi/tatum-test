@@ -7,4 +7,8 @@ interface Props {
 }
 
 export const ErrorNotification: FunctionalComponent<Props> = ({ message }) =>
-    !!message && <div className={styles.error}>{message}</div>;
+    !!message && (
+        <div className={styles.error} role="alert">
+            {message}
+        </div>
+    );

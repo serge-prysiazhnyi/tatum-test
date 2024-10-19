@@ -1,7 +1,7 @@
 import styles from './LoadingIndicator.module.css';
 
 export const LoadingIndicator = () => (
-    <div class={styles.container}>
+    <div class={styles.container} role="progressbar">
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="1em"

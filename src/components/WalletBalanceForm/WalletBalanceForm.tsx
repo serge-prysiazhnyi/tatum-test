@@ -4,12 +4,9 @@ import { useState } from 'preact/hooks';
 import { useFetchEthereumAddressBalance } from '../../hooks/useFetchEthereumAddressBalance';
 import { LoadingIndicator } from '../LoadingIndicator/LoadingIndicator';
 import { ErrorNotification } from '../ErrorNotification/ErrorNotification';
+import { isValidETHAddress } from '../../utils/isValidETHAddress';
 
 import styles from './WalletBalanceForm.module.css';
-
-const isValidETHAddress = (address: string) => {
-    return /^0x[a-fA-F0-9]{40}$/.test(address);
-};
 
 export const WalletBalanceForm = () => {
     const [inputValue, setInputValue] = useState('');
