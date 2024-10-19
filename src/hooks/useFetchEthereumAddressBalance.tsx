@@ -1,9 +1,9 @@
 import { Network, TatumSDK, Ethereum } from '@tatumio/tatum';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'preact/hooks';
 
 export const useFetchEthereumAddressBalance = () => {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
+    const [error, setError] = useState<string | null>(null);
     const [tatum, setTatum] = useState<Ethereum>(null);
     const [balance, setBalance] = useState('');
 
@@ -32,7 +32,7 @@ export const useFetchEthereumAddressBalance = () => {
 
             setBalance(balanceData.balance);
         } catch (error) {
-            console.log(error);
+            console.log('Something went wrong:', error);
             setError(error.message);
         } finally {
             setLoading(false);

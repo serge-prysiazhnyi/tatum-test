@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { JSX } from 'preact';
+import { useState } from 'preact/hooks';
 
 import { useFetchEthereumAddressBalance } from '../../hooks/useFetchEthereumAddressBalance';
 import { LoadingIndicator } from '../LoadingIndicator/LoadingIndicator';
@@ -12,37 +13,28 @@ export const WalletBalanceForm = () => {
     const { fetchBalance, loading, error, balance } =
         useFetchEthereumAddressBalance();
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: JSX.TargetedEvent<HTMLFormElement>) => {
+        e.preventDefault();
         await fetchBalance(inputValue);
     };
 
     return (
-        <form
-            onSubmit={(e) => {
-                e.preventDefault();
-            }}
-        >
+        <form onSubmit={handleSubmit}>
             <input
                 id="address"
                 className={styles.addressInput}
                 type="text"
                 value={inputValue}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                onChange={(e: JSX.TargetedEvent<HTMLInputElement>) =>
                     setInputValue(e.currentTarget.value)
                 }
                 placeholder="Enter ETH wallet address to get balance"
             />
 
             <button
-                onClick={handleSubmit}
                 className={styles.submitButton}
                 disabled={!inputValue || loading}
                 type="submit"
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                        handleSubmit();
-                    }
-                }}
             >
                 {loading ? <LoadingIndicator /> : 'Submit'}
             </button>
@@ -51,7 +43,7 @@ export const WalletBalanceForm = () => {
                 <p className={styles.balance}>{`Balance: ${balance} ETH`}</p>
             )}
 
-            <ErrorNotification message={error?.message} />
+            <ErrorNotification message={error} />
         </form>
     );
 };
